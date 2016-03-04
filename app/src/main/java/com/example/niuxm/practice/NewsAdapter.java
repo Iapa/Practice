@@ -7,6 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.example.niuxm.practice.model.Newsbean;
+import com.squareup.picasso.Picasso;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by niuxm on 2016/3/1.
@@ -19,11 +23,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private boolean isShowFooter = true;
     private Context mContext;
     private final LayoutInflater mInflator;
+    private List<Newsbean> mNewsbeans;
 
-
-    public NewsAdapter(Context context) {
+    public NewsAdapter(Context  context) {
         this.mContext = context;
         mInflator = LayoutInflater.from(context);
+        mNewsbeans = new ArrayList<Newsbean>();
+
+    }
+
+    public void setData(List<Newsbean> newsbeans) {
+        mNewsbeans = newsbeans;
+        notifyDataSetChanged();
     }
 
 
@@ -39,6 +50,15 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         }
     }
 
+    public boolean isShowFooter() {
+        return isShowFooter;
+    }
+
+    public void addData(List<Newsbean> newsbeans) {
+        if(newsbeans == null) throw new NullPointerException("sdfds");
+        mNewsbeans.addAll(newsbeans);
+        notifyDataSetChanged();
+    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -61,14 +81,25 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if (holder instanceof ViewHolder) {
+            if (mNewsbeans != null) {
+                Newsbean news = mNewsbeans.get(position);
+                if (news == null) {
+                    return;
+                }
+                ((ViewHolder) holder).mTitle.setText(news.getTitle());
+                ((ViewHolder) holder).mDesc.setText(news.getDigest());
+                Picasso.with(mContext).load(news.getImgsrc()).into(((ViewHolder) holder).mImageView);
 
+            }
+        }
     }
 
 
 
 
     @Override public int getItemCount() {
-        return 50;
+        return mNewsbeans==null?20:mNewsbeans.size();
     }
 
 

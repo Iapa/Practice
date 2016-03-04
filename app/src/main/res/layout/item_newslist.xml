@@ -12,6 +12,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:gravity="center_vertical"
         android:layout_height="wrap_content">
 
         <ImageView
@@ -29,6 +30,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="10dp"
             android:singleLine="true"
+            android:textColor="#000000"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             tools:text="我是标题啊啊啊 啊"
             />
@@ -41,6 +43,7 @@
             android:textStyle="bold"
             tools:text="我的秒速内容"
             android:layout_toRightOf="@+id/iv_item"
+            android:textColor="@android:color/secondary_text_dark"
             android:layout_marginTop="10dp"
             android:layout_marginLeft="5dp"
             android:layout_below="@+id/tv_item_title"

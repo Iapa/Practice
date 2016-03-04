@@ -10,19 +10,13 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import com.example.niuxm.practice.api.Uri;
 import com.example.niuxm.practice.baisc.BaseActivity;
-import com.orhanobut.logger.Logger;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "MainActivity";
     private TabLayout mTabs;
     private FragmentManager mSupportFragmentManager;
-    private final OkHttpClient mOkHttpClient = new OkHttpClient();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,27 +48,10 @@ public class MainActivity extends BaseActivity
                 .frame_content,new NewFragment()).commit();
 
 
-
-        new Thread(new Runnable() {
-            @Override public void run() {
-                try {
-                    requestData();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
     }
 
 
-    private void requestData() throws Exception {
-        Request request = new Request.Builder().url(Uri.NEWS_URL).build();
-        Response response = mOkHttpClient.newCall(request).execute();
-        if (response.isSuccessful()) {
-            Logger.d(response.body().string());
-        }
-    }
+
 
 
     @Override

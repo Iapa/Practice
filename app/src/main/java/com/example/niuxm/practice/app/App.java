@@ -2,6 +2,7 @@ package com.example.niuxm.practice.app;
 
 import android.app.Application;
 import android.content.Context;
+import com.orhanobut.logger.Logger;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
 
@@ -20,6 +21,7 @@ public class App extends Application {
 
     @Override public void onCreate() {
         super.onCreate();
+        Logger.init();
         mRefWatcher = LeakCanary.install(this);
     }
 }
