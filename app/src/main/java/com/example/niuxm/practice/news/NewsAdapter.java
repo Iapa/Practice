@@ -1,4 +1,4 @@
-package com.example.niuxm.practice;
+package com.example.niuxm.practice.news;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import com.example.niuxm.practice.R;
 import com.example.niuxm.practice.model.Newsbean;
 import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
@@ -17,18 +18,19 @@ import java.util.List;
  */
 public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    public static final int TYPE_ITEM = 0;
-    public static final int TYPE_FOOTER = 1;
-
+    public static final int TYPE_ITEM = 1;
+    public static final int TYPE_FOOTER = 2;
+    public static final int TYPE_HEADER = 0;
+    public static final int TYPE_ITEM_IMAGE = 3;
+    private final LayoutInflater mInflator;
     private boolean isShowFooter = true;
     private Context mContext;
-    private final LayoutInflater mInflator;
     private List<Newsbean> mNewsbeans;
 
     public NewsAdapter(Context  context) {
         this.mContext = context;
         mInflator = LayoutInflater.from(context);
-        mNewsbeans = new ArrayList<Newsbean>();
+        mNewsbeans = new ArrayList<>();
 
     }
 
@@ -39,8 +41,13 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
     @Override public int getItemViewType(int position) {
-        if (!isShowFooter) {
-            return TYPE_ITEM;
+
+        if (position == 0) {
+            return TYPE_HEADER;
+        }
+
+        if (position % 4 == 0) {
+            return TYPE_ITEM_IMAGE;
         }
         if (position + 1 == getItemCount()) {
             return TYPE_FOOTER;
@@ -66,14 +73,18 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         if (viewType == TYPE_ITEM) {
             View view = mInflator.inflate(R.layout.item_newslist, parent,
                     false);
-            ViewHolder viewHolder = new ViewHolder(view);
-            return viewHolder;
-        }
-        else {
-            View view = mInflator.inflate(R.layout.footer, null);
-            view.setLayoutParams(new ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            return new ViewHolder(view);
+        } else if (viewType == TYPE_HEADER) {
+            View view = mInflator.inflate(R.layout.item_newlist_tyep2, parent, false);
+            return new HeaderViewHolder(view);
+        } else if (viewType == TYPE_ITEM_IMAGE) {
+            View view = mInflator.inflate(R.layout.item_newlist_type3, parent, false);
+            return new ImageViewHolder(view);
+        } else {
+            View view = mInflator.inflate(R.layout.footer, parent, false);
+            view.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
             return new FooterViewHolder(view);
         }
     }
@@ -93,13 +104,23 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
             }
         }
+
+        switch (holder.getItemViewType()) {
+
+            case TYPE_HEADER:
+                break;
+            case TYPE_ITEM_IMAGE:
+                break;
+            case TYPE_FOOTER:
+                break;
+        }
     }
 
 
 
 
     @Override public int getItemCount() {
-        return mNewsbeans==null?20:mNewsbeans.size();
+        return mNewsbeans.size();
     }
 
 
@@ -129,4 +150,19 @@ public class NewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             super(itemView);
         }
     }
+
+    private class HeaderViewHolder extends RecyclerView.ViewHolder {
+
+        public HeaderViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private class ImageViewHolder extends RecyclerView.ViewHolder {
+
+        public ImageViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
 }

@@ -1,15 +1,17 @@
-package com.example.niuxm.practice;
+package com.example.niuxm.practice.news;
 
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.example.niuxm.practice.R;
 import com.example.niuxm.practice.api.Uri;
 import com.example.niuxm.practice.baisc.BaseFragment;
 import com.example.niuxm.practice.model.Newsbean;
@@ -39,11 +41,33 @@ public class NewsListFragment extends BaseFragment
     private int mType;
     private OkHttpClient mOkHttpClient;
     private List<Newsbean> mNewsbeans;
-    private List<Newsbean> mNewsbeans1 = new ArrayList<Newsbean>();
+    private List<Newsbean> mNewsbeans1 = new ArrayList<>();
     private NewsAdapter mNewsAdapter;
     private Handler mHandler;
     private LinearLayoutManager mLinearLayoutManager;
+    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
 
+        private int lastVisibleItem;
+
+        @Override public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
+
+            if (newState == RecyclerView.SCROLL_STATE_IDLE &&
+                lastVisibleItem + 1 == mNewsAdapter.getItemCount() &&
+                mNewsAdapter.isShowFooter()) {
+                try {
+                    requestData(Uri.NEWS_URL2);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        @Override public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+            lastVisibleItem = mLinearLayoutManager.findLastVisibleItemPosition();
+        }
+    };
 
     public static NewsListFragment newInstance(int type) {
         NewsListFragment newsListFragment = new NewsListFragment();
@@ -52,7 +76,6 @@ public class NewsListFragment extends BaseFragment
         newsListFragment.setArguments(bundle);
         return newsListFragment;
     }
-
 
     @Override public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +98,7 @@ public class NewsListFragment extends BaseFragment
                     throws IOException {
                 String string = response.body().string();
                 Gson gson = new Gson();
-                mNewsbeans = new ArrayList<Newsbean>();
+                mNewsbeans = new ArrayList<>();
                 JsonParser jsonParser = new JsonParser();
                 JsonObject jsonObject = jsonParser.parse(string)
                                                   .getAsJsonObject();
@@ -116,7 +139,6 @@ public class NewsListFragment extends BaseFragment
 
     }
 
-
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -126,7 +148,6 @@ public class NewsListFragment extends BaseFragment
             e.printStackTrace();
         }
     }
-
 
     @SuppressWarnings("ResourceType") @Nullable @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -144,39 +165,15 @@ public class NewsListFragment extends BaseFragment
         mRecyclerView.setHasFixedSize(true);
         mLinearLayoutManager = new LinearLayoutManager(
                 container.getContext());
+        mLinearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mRecyclerView.setLayoutManager(mLinearLayoutManager);
-        //mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        //mRecyclerView.addItemDecoration(new DividerItemDecoration(getContext(),null));
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(2));
         mRecyclerView.addOnScrollListener(mOnScrollListener);
         return view;
     }
-
-
-    private RecyclerView.OnScrollListener mOnScrollListener = new RecyclerView.OnScrollListener() {
-
-        private int lastVisibleItem;
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-
-            if (newState == RecyclerView.SCROLL_STATE_IDLE &&
-                    lastVisibleItem + 1 == mNewsAdapter.getItemCount() &&
-                    mNewsAdapter.isShowFooter()) {
-                try {
-                    requestData(Uri.NEWS_URL2);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        @Override
-        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-            super.onScrolled(recyclerView, dx, dy);
-            lastVisibleItem = mLinearLayoutManager
-                    .findLastVisibleItemPosition();
-
-        }
-    };
 
     @Override public void onRefresh() {
         mNewsbeans.clear();
