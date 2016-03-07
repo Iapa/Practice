@@ -7,10 +7,12 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import com.example.niuxm.practice.baisc.BaseActivity;
+import com.example.niuxm.practice.news.NewFragment;
 
 public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -105,9 +107,13 @@ public class MainActivity extends BaseActivity
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
-
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            recreate();
+            return true;
         } else if (id == R.id.nav_send) {
-
+            getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            recreate();
+            return true;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

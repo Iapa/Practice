@@ -1,4 +1,4 @@
-package com.example.niuxm.practice;
+package com.example.niuxm.practice.news;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -10,6 +10,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import com.example.niuxm.practice.R;
 import com.example.niuxm.practice.baisc.BaseFragment;
 import java.util.ArrayList;
 import java.util.List;
